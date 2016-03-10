@@ -5,7 +5,10 @@ $(() => {
   
   let key, lastFetch;
   
-  repo.on('change', update);
+  repo.on('change', () => {
+    key = undefined;
+    update();
+  });
   input.on('input', update);
   
   function update() {
@@ -18,7 +21,6 @@ $(() => {
     } else {
       if (lastFetch === repo.val()) return;
       lastFetch = repo.val();
-      key = undefined;
       $.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`)
         .done(val => key = val.key)
         .always(update);
