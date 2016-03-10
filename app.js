@@ -18,8 +18,7 @@ $(() => {
     
     if (key) {
       repo.css('border-color', 'green');
-    } else {
-      if (lastFetch === repo.val()) return;
+    } else if (lastFetch !== repo.val()) {
       lastFetch = repo.val();
       $.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`)
         .done(val => key = val.key)
