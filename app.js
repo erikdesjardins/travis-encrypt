@@ -18,7 +18,7 @@ $(() => {
     } else {
       if (lastFetch === repo.val()) return;
       lastFetch = repo.val();
-      $.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`)
+      Promise.resolve($.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`))
         .then(val => key = val.key)
         .catch(() => {})
         .then(update);
