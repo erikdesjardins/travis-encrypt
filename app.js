@@ -20,7 +20,7 @@ $(() => {
       fetching = true;
       // deliberately avoid handling the case where this request fails
       // so we don't end up trying to fetch it over and over again
-      $.getJson(`https://api.travis-ci.org/repos/${repo.val()}/key`)
+      $.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`)
         .then(val => {
           key = val.key;
           fetching = false;
