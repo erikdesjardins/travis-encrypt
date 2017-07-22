@@ -1,41 +1,40 @@
-$(() => {
-  const repo = $('#repo');
-  const input = $('#input');
-  const output = $('#output');
-  
-  let key, lastFetch;
-  
-  repo.on('change', () => {
+const repo = document.getElementById('repo');
+const input = document.getElementById('input');
+const output = document.getElementById('output');
+
+let key, lastFetch;
+
+function update() {
+  repo.style.borderColor = 'red';
+  input.style.borderColor = 'red';
+  output.style.borderColor = 'red';
+
+  if (lastFetch !== repo.value) {
     key = undefined;
-    update();
-  });
-  input.on('input', update);
-  
-  function update() {
-    repo.css('border-color', 'red');
-    input.css('border-color', 'red');
-    output.css('border-color', 'red');
-    
-    if (key) {
-      repo.css('border-color', 'green');
-    } else if (lastFetch !== repo.val()) {
-      lastFetch = repo.val();
-      $.getJSON(`https://api.travis-ci.org/repos/${repo.val()}/key`)
-        .done(val => key = val.key)
-        .always(update);
-    }
-    
-    if (input.val()) {
-      input.css('border-color', 'green');
-    }
-    
-    if (key && input.val()) {
-      const enc = new JSEncrypt();
-      enc.setKey(key);
-      output.val(enc.encrypt(input.val()));
-      output.css('border-color', 'green');
-    }
+    lastFetch = repo.value;
+    fetch(`https://api.travis-ci.org/repos/${repo.value}/key`)
+      .then(r => r.json())
+      .then(val => {
+        key = val.key;
+        update();
+      });
+  } else if (key) {
+    repo.style.borderColor = 'green';
   }
-  
-  update();
-});
+
+  if (input.value) {
+    input.style.borderColor = 'green';
+  }
+
+  if (key && input.value) {
+    const enc = new JSEncrypt();
+    enc.setKey(key);
+    output.value = enc.encrypt(input.value);
+    output.style.borderColor = 'green';
+  }
+}
+
+repo.addEventListener('change', update);
+input.addEventListener('input', update);
+
+update();
